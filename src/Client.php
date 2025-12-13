@@ -7,7 +7,7 @@ namespace Bunny\Stream;
 use Bunny\Stream\API\Collection;
 use Bunny\Stream\API\Livestream;
 use Bunny\Stream\API\Statistics;
-// use Bunny\Stream\API\Tus; # todo: do this later
+use Bunny\Stream\API\Tus;
 use Bunny\Stream\API\Video;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\GuzzleException;
@@ -56,10 +56,10 @@ class Client
         return $this->livestream ??= new Livestream($this->httpClient, $this->apiKey, $this->streamLibraryId);
     }
 
-    // public function tus(): Tus
-    // {
-    //     return $this->tus ??= new Tus($this->httpClient, $this->apiKey, $this->streamLibraryId);
-    // }
+    public function tus(): Tus
+    {
+        return $this->tus ??= new Tus($this->httpClient, $this->apiKey, $this->streamLibraryId);
+    }
 
     public function statistics(): Statistics
     {
