@@ -197,11 +197,46 @@ class Video extends AbstractApi
         $query = ['keepOriginalFiles' => $keepOriginalFiles ? 'true' : 'false'];
 
         return $this->requestJson(
-            'GET',
+            'POST',
             'videos/' . $videoId . '/repackage',
             ['query' => $query],
             'Could not repackage video.',
             $videoId
+        );
+    }
+
+    public function smartGenerate(string $videoId): array
+    {
+        return $this->requestJson(
+            'POST',
+            'videos/' . $videoId . '/smart',
+            [],
+            'Could not trigger smart generation.',
+            $videoId
+        );
+    }
+
+    public function getHeatmapData(string $videoId): array
+    {
+        return $this->requestJson(
+            'GET',
+            'videos/' . $videoId . '/play/heatmap',
+            [],
+            'Could not get video heatmap data.',
+            $videoId
+        );
+    }
+
+    public function getStatistics(string $videoId, ?array $query = null): array
+    {
+        $query = $query ?? [];
+        $query['videoGuid'] = $videoId;
+
+        return $this->requestJson(
+            'GET',
+            'statistics',
+            ['query' => $query],
+            'Could not get video statistics.'
         );
     }
 
