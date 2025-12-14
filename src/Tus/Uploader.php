@@ -37,7 +37,7 @@ class Uploader
         while ($offset < $fileSize) {
             fseek($handle, $offset);
             $chunk = fread($handle, $this->chunkSize);
-            
+
             try {
                 $response = $this->client->request('PATCH', $this->uploadUrl, [
                     'headers' => [

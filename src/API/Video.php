@@ -229,7 +229,7 @@ class Video extends AbstractApi
 
     public function getStatistics(string $videoId, ?array $query = null): array
     {
-        $query = $query ?? [];
+        $query ??= [];
         $query['videoGuid'] = $videoId;
 
         return $this->requestJson(
@@ -335,7 +335,7 @@ class Video extends AbstractApi
             'POST',
             'videos/' . $videoId . '/transcribe',
             [
-                'query' => $query, 
+                'query' => $query,
                 'json'  => $opts,
             ],
             'Could not transcribe video.',

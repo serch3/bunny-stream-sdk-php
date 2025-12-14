@@ -16,7 +16,7 @@ class Client
 {
     private const API_BASE_URL = 'https://video.bunnycdn.com/library/';
     private GuzzleClient $httpClient;
-    
+
     // API Resources
     private ?Video $video = null;
     private ?Collection $collection = null;

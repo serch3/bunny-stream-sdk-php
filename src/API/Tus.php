@@ -42,7 +42,7 @@ class Tus extends AbstractApi
 
         $encodedMetadata = [];
         foreach ($metadata as $key => $value) {
-            $encodedMetadata[] = $key . ' ' . base64_encode((string)$value);
+            $encodedMetadata[] = $key . ' ' . base64_encode((string) $value);
         }
 
         $response = $this->client->request('POST', $url, [
@@ -63,11 +63,5 @@ class Tus extends AbstractApi
         }
 
         return new Uploader($this->client, $filePath, $location);
-    }
-
-    // Helper to extract library ID from the base URI or store it in AbstractApi
-    private function getLibraryId(): string
-    {
-        return $this->libraryId;
     }
 }
