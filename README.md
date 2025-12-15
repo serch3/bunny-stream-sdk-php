@@ -1,8 +1,14 @@
-# Bunny Stream PHP Library
-A simple PHP library to interact with the Bunny Stream [API](https://docs.bunny.net/reference/api-overview).
+# Bunny Stream PHP SDK
 
-### Requires
-In order to interact with the API you need the API Access Information (Stream->{Library}->API)
+A modern, robust PHP library to interact with the [Bunny Stream API](https://docs.bunny.net/reference/api-overview).
+
+[![Latest Stable Version](https://poser.pugx.org/serch3/bunny-stream/v/stable)](https://packagist.org/packages/serch3/bunny-stream)
+[![License](https://poser.pugx.org/serch3/bunny-stream/license)](https://packagist.org/packages/serch3/bunny-stream)
+
+## Requirements
+
+- PHP 8.2+
+- Composer
 
 ## Installation
 
@@ -10,363 +16,52 @@ In order to interact with the API you need the API Access Information (Stream->{
 composer require serch3/bunny-stream
 ```
 
-## How to use: 
+## Quick Start
 
-### Quick start
-Create an instance of the \Bunny\Stream\Client with the authentication details:
+Initialize the client with your API Key and Library ID:
 
 ```php
-$client = new \Bunny\Stream\Client('API_KEY', 'LIBRARY_ID');
-```
----
-## Manage Videos: 
+use Bunny\Stream\Client;
 
-### Listing Videos:
+$client = new Client('YOUR_API_KEY', 'YOUR_LIBRARY_ID');
+```
+
+### Basic Usage
+
+**List Videos:**
 ```php
-$client->listVideos();
-
-$client->listVideos($search, $page, $items, $collection, $orderby); //filtered results
+$videos = $client->video()->list();
+foreach ($videos['items'] as $video) {
+    echo $video['title'] . "\n";
+}
 ```
-Optional:
 
-- `$Search` if set, the response will be filtered to only contain videos that contain the search term `string`
-
-- `$Page` Page number. Default is 1 `int`
-
-- `$Items` Number of results per page. Default is 100 `int`
-
-- `$Collection` If set, the response will only contain videos that belong to this collection Id  `string`
-
-- `$OrderBy` Determines the ordering of the result within the response. date/title `string`
-
----
-
-###  Get Video
+**Upload a Video (Resumable):**
 ```php
-$client->getVideo($videoId);
+// 1. Create a video entry
+$video = $client->video()->create('My Awesome Video');
+
+// 2. Upload using Tus
+$uploader = $client->tus()->createUpload(
+    $video['guid'],
+    '/path/to/video.mp4'
+);
+$uploader->upload();
 ```
-`$videoId` ID of the video `string`
 
----
-
-### Update Video
+**Manage Collections:**
 ```php
-$body = [
-        'title' => '...',
-        'collectionId' => '...',
-        'chapters' => [
-            [
-                'title' => 'Chapter 1',
-                'start' => 0,
-                'end' => 300,
-            ]
-        ],
-        'moments' => [
-            [
-                'label' => 'Awesome Scene 1',
-                'timestamp' => 70,
-            ],
-        ],
-        'metaTags' => [
-            [
-                'property' => 'description',
-                'value' => 'My Video Description',
-            ],
-        ],
-];
-$client->updateVideo($videoId, $body);
+$client->collection()->create('New Collection');
 ```
-`$videoId` Id of the video `string`
 
-`$body` Updated video details `array`
+## Documentation
 
----
+For a complete list of available methods and parameters, please see the **[API Reference](REFERENCE.md)**.
 
-### Delete Video
-```php
-$client->deleteVideo($videoId);
-```
-`$videoId` Id of the video that will be **permanently** deleted `string`
+## Upgrading
 
----
+Upgrading from v1? Check out the **[Upgrade Guide](UPGRADING.md)**.
 
-### Create Video Entry
-```php
-$client->createVideo($title, $collectionId, $thumbnailTime);
-```
-`$title` Title of the video `string`
+## License
 
-Optional:
-
-- `$collectionId` Collection Id `string`
-
-- `$thumbnailTime` Video time in ms to extract the main video thumbnail `int32`
-
----
-
-### Upload Video with Id
-```php
-$client->uploadVideoWithVideoId($videoId, $path, $enabledResolutions);
-```
-`$videoId` Id of the video entry `string`
-
-`$path` Video file path `string`
-
-Optional: 
-
-- `$enabledResolutions` Custom resolutions for the video `string` 
-
----
-
-### Upload Video
-```php
-$client->uploadVideo($title, $path, $collectionId, $thumbnailTime, $enabledResolutions);
-```
-`$title` Title of the video `string`
-
-`$path` Video file path `string`
-
-Optional:
-
-- `$collectionId` Collection Id `string`
-
-- `$thumbnailTime` Video time in ms to extract the main video thumbnail `int32`
-
-- `$enabledResolutions` Custom resolutions for the video `string`
-
----
-
-### Set Thumbnail
-```php
-$client->setVideoThumbnail($videoId, $url);
-```
-`$videoId` Id of the video `string`
-
-`$url` accessible thumbnail url `string`
-
----
-
-### Get Video Heatmap
-```php
-$client->getVideoHeatmap($videoId);
-```
-`$videoId` Id of the video `string`
-
----
-
-### Get Video play data
-```php
-$client->getVideoPlayData($videoId, $token, $expires);
-```
-`$videoId` Id of the video `string`
-
-Optional:
-
-- `$token` Token to authenticate the request `string`
-
-- `$expires` Expiry time of the token `int64`
-
----
-
-### Get Video Statistics
-```php
-$query = [
-    'dateFrom' => 'm-d-Y',
-    'dateTo' => 'm-d-Y',
-    'hourly' => false,
-    'videoGuid' => '...',
-];
-$client->getVideoStatistics($videoId, $query);
-```
-`$videoId` Id of the video `string`
-
-Optional:
-
-- `$query` parameters `array`: 
-    - *dateFrom* - The start date of the statistics. If no value is passed, the last 30 days will be returned. `date-time`
-    - *dateTo* - The end date of the statistics. If no value is passed, the last 30 days will be returned. `date-time`
-    - *hourly* - If true, the statistics data will be returned in hourly groupping. `boolean` 
-    - *videoGuid* - The GUID of the video for which the statistics will be returned `string`
-
-### Re-encode Video
-```php
-$client->reencodeVideo($videoId);
-```
-`$videoId` Id of the video `string`
-
----
-
-### Add output codec to video (Requires Premium Encoding Plan)
-```php
-$client->addOutputCodec($videoId, $codec);
-```
-`$videoId` Id of the video `string`
-
-`$codec` Output codec to be added `int`
-    - 0 = x264
-    - 1 = vp9
-    - 2 = hevc
-    - 3 = av1
-
----
-
-### Repackage Video
-```php
-$client->repackageVideo($videoId, $keepOriginalFiles);
-```
-`$videoId` Id of the video `string`
-
-`$keepOriginalFiles` Marks whether previous file versions should be kept in storage, allows for faster repackage later on. Default is true.
-
----
-
-### Fetch Video
-```php
-$client->fetchVideo($url, $title, $collectionId, $thumbnailTime, $headers);
-```
-`$url` The URL from which the video will be fetched from. `string`
-
-Optional:
-
-- `$title` Title of the video `string`
-
-- `$collectionId` Collection Id `string`
-
-- `$thumbnailTime` Video time in ms to extract the main video thumbnail `int32`
-
-- `$headers` Additional headers that will be sent along with the fetch request. `array`
-
----
-
-### Add Caption
-```php
-$client->addCaption($videoId, $srclang, $path, $label);
-```
-`$videoId` Id of the video `string`
-
-`$srclang` Language shortcode for the caption. `string`
-
-`$path` Caption file path (.vtt/.srt) `string`
-
-Optional:
-
-- `$label` Label of the caption `string`
-
----
-
-### Delete Caption
-```php
-$client->deleteCaption($videoId, $srclang);
-```
-`$videoId` Id of the video `string`
-
-`$srclang`  Language shortcode for the caption. `string`
-
----
-
-### Transcribe video
-```php
-$client->transcribeVideo($videoId, $language, $force);
-```
-`$videoId` Id of the video `string`
-
-`$language` Language code for the transcription `string`
-
-`$force` Default is false `bool`
-
----
-
-### Request Video resolutions info
-```php
-$client->requestVideoResolutionsInfo($videoId);
-```
-`$videoId` Id of the video `string`
-
----
-
-### Cleanup unconfigured resolutions
-```php
-$config = [
-    'deleteNonConfiguredResolutions' => true,
-    'deleteOriginal' => false,
-    'deleteMp4Files' => true,
-    'dryRun' => false,
-];
-$resolutions = "240p,360p,480p";
-
-$client->cleanupResolutions($videoId, $resolutions, $query);
-```
-`$videoId` Id of the video `string`
-
-`$resolutions` List of resolutions to be removed `array`
-
-Optional: 
-
-- `$query` parameters `array`: 
-    - *resolutionsToDelete* - List of resolutions to be removed `array`
-    - *deleteNonConfiguredResolutions* - If set to true, all resolutions that are not configured in the video will be removed   `boolean`
-    - *deleteOriginal* - If set to true, the original file will be removed. `boolean`
-    - *deleteMp4Files* - If set to true, all mp4 files will be removed. `boolean`
-    - *dryRun* - If set to true, no actual file manipulation will happen, only informational data will be returned. `boolean`
-
-
-## Collections:
-
-### Listing Collections
-```php
-$client->listCollections($search, $page, $items, $orderby, $includeThumbnails);
-```
-Optional:
-
-- `$search` if set, the response will be filtered to only contain collections that contain the search term `string`
-
-- `$page` Page number. Default is 1 `int`
-
-- `$items` Number of results per page. Default is 100 `int`
-
-- `$orderby` Determines the ordering of the result within the response. date/title `string`
-
-- `$includeThumbnails` If set to true, the response will include the thumbnail for each collection. Default is false `bool`
-
----
-
-### Get Collection
-```php
-$client->getCollection($collectionId, $includeThumbnails);
-```
-`$collectionId` Id of the collection `string`
-
-Optional:
-
-- `$includeThumbnails` If set to true, the response will include the thumbnail URL for the collection. Default is false `bool`
-
----
-
-### Create Collection
-```php
-$client->createCollection($name);
-```
-`$name` Name of the collection `string`
-
----
-
-### Update Collection
-```php
-$client->updateCollection($collectionId, $name);
-```
-`$collectionId` Id of the collection `string`
-
-`$name` Updated name of the collection `string`
-
----
-
-### Delete Collection
-```php
-$client->deleteCollection($collectionId);
-```
-`$collectionId` Id of the collection to be deleted `string`
-
-
----
-## Returns
-All methods return an associative array with the response from the API, or an exception if an error occurs. Check reference for specific responses.
+MIT
