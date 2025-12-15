@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 use Bunny\Stream\API\Video;
 use GuzzleHttp\Psr7\Response;
 
-describe('Video API', function () {
-    it('can list videos', function () {
+describe('Video API', function (): void {
+    it('can list videos', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode(['items' => []])),
@@ -18,7 +20,7 @@ describe('Video API', function () {
             ->and($container[0]['request']->getUri()->getPath())->toBe('/library/123/videos');
     });
 
-    it('can get a video', function () {
+    it('can get a video', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode(['guid' => 'video-id'])),
@@ -31,7 +33,7 @@ describe('Video API', function () {
             ->and($container[0]['request']->getUri()->getPath())->toBe('/library/123/videos/video-id');
     });
 
-    it('can create a video', function () {
+    it('can create a video', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode(['guid' => 'video-id'])),
@@ -45,7 +47,7 @@ describe('Video API', function () {
             ->and((string) $container[0]['request']->getBody())->toContain('New Video');
     });
 
-    it('can update a video', function () {
+    it('can update a video', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode(['guid' => 'video-id'])),
@@ -58,7 +60,7 @@ describe('Video API', function () {
             ->and($container[0]['request']->getUri()->getPath())->toBe('/library/123/videos/video-id');
     });
 
-    it('can delete a video', function () {
+    it('can delete a video', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode([])),
@@ -71,7 +73,7 @@ describe('Video API', function () {
             ->and($container[0]['request']->getUri()->getPath())->toBe('/library/123/videos/video-id');
     });
 
-    it('can repackage a video', function () {
+    it('can repackage a video', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode([])),
@@ -84,7 +86,7 @@ describe('Video API', function () {
             ->and($container[0]['request']->getUri()->getPath())->toBe('/library/123/videos/video-id/repackage');
     });
 
-    it('can trigger smart generate', function () {
+    it('can trigger smart generate', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode([])),
@@ -97,7 +99,7 @@ describe('Video API', function () {
             ->and($container[0]['request']->getUri()->getPath())->toBe('/library/123/videos/video-id/smart');
     });
 
-    it('can get heatmap data', function () {
+    it('can get heatmap data', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode([])),
@@ -110,7 +112,7 @@ describe('Video API', function () {
             ->and($container[0]['request']->getUri()->getPath())->toBe('/library/123/videos/video-id/play/heatmap');
     });
 
-    it('can get statistics', function () {
+    it('can get statistics', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode([])),

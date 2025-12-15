@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 use Bunny\Stream\API\Tus;
 use Bunny\Stream\Tus\Uploader;
 use GuzzleHttp\Psr7\Response;
 
-describe('Tus API', function () {
-    it('can create a tus upload', function () {
+describe('Tus API', function (): void {
+    it('can create a tus upload', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(201, ['Location' => 'http://example.com/files/123']),
@@ -26,7 +28,7 @@ describe('Tus API', function () {
         unlink($filePath);
     });
 
-    it('throws exception if file not found', function () {
+    it('throws exception if file not found', function (): void {
         $container = [];
         $client = mockGuzzleClient([], $container);
         $tus = new Tus($client, 'api-key', '123');

@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 use Bunny\Stream\API\Collection;
 use GuzzleHttp\Psr7\Response;
 
-describe('Collection API', function () {
-    it('can list collections', function () {
+describe('Collection API', function (): void {
+    it('can list collections', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode(['items' => []])),
@@ -17,7 +19,7 @@ describe('Collection API', function () {
             ->and($container[0]['request']->getUri()->getPath())->toBe('/library/123/collections');
     });
 
-    it('can get a collection', function () {
+    it('can get a collection', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode(['guid' => 'collection-id'])),
@@ -30,7 +32,7 @@ describe('Collection API', function () {
             ->and($container[0]['request']->getUri()->getPath())->toBe('/library/123/collections/collection-id');
     });
 
-    it('can create a collection', function () {
+    it('can create a collection', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode(['guid' => 'collection-id'])),
@@ -44,7 +46,7 @@ describe('Collection API', function () {
             ->and((string) $container[0]['request']->getBody())->toContain('New Collection');
     });
 
-    it('can update a collection', function () {
+    it('can update a collection', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode(['guid' => 'collection-id'])),
@@ -57,7 +59,7 @@ describe('Collection API', function () {
             ->and($container[0]['request']->getUri()->getPath())->toBe('/library/123/collections/collection-id');
     });
 
-    it('can delete a collection', function () {
+    it('can delete a collection', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode([])),

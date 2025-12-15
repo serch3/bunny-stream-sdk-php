@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 use Bunny\Stream\API\Livestream;
 use GuzzleHttp\Psr7\Response;
 
-describe('Livestream API', function () {
-    it('can list livestreams', function () {
+describe('Livestream API', function (): void {
+    it('can list livestreams', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode(['items' => []])),
@@ -17,7 +19,7 @@ describe('Livestream API', function () {
             ->and($container[0]['request']->getUri()->getPath())->toBe('/library/123/live');
     });
 
-    it('can get a livestream', function () {
+    it('can get a livestream', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode(['id' => 'stream-id'])),
@@ -30,7 +32,7 @@ describe('Livestream API', function () {
             ->and($container[0]['request']->getUri()->getPath())->toBe('/library/123/live/stream-id');
     });
 
-    it('can create a livestream', function () {
+    it('can create a livestream', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode(['id' => 'stream-id'])),
@@ -44,7 +46,7 @@ describe('Livestream API', function () {
             ->and((string) $container[0]['request']->getBody())->toContain('New Stream');
     });
 
-    it('can update a livestream', function () {
+    it('can update a livestream', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode(['id' => 'stream-id'])),
@@ -57,7 +59,7 @@ describe('Livestream API', function () {
             ->and($container[0]['request']->getUri()->getPath())->toBe('/library/123/live/stream-id');
     });
 
-    it('can delete a livestream', function () {
+    it('can delete a livestream', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode([])),
@@ -70,7 +72,7 @@ describe('Livestream API', function () {
             ->and($container[0]['request']->getUri()->getPath())->toBe('/library/123/live/stream-id');
     });
 
-    it('can get play data', function () {
+    it('can get play data', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode([])),
@@ -83,7 +85,7 @@ describe('Livestream API', function () {
             ->and($container[0]['request']->getUri()->getPath())->toBe('/library/123/live/stream-id/play-data');
     });
 
-    it('can start a livestream', function () {
+    it('can start a livestream', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode([])),
@@ -96,7 +98,7 @@ describe('Livestream API', function () {
             ->and($container[0]['request']->getUri()->getPath())->toBe('/library/123/live/stream-id/start');
     });
 
-    it('can stop a livestream', function () {
+    it('can stop a livestream', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode([])),
@@ -109,7 +111,7 @@ describe('Livestream API', function () {
             ->and($container[0]['request']->getUri()->getPath())->toBe('/library/123/live/stream-id/stop');
     });
 
-    it('can get bitrate history', function () {
+    it('can get bitrate history', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode([])),
@@ -122,7 +124,7 @@ describe('Livestream API', function () {
             ->and($container[0]['request']->getUri()->getPath())->toBe('/library/123/live/stream-id/bitrate-history');
     });
 
-    it('can get current bitrate', function () {
+    it('can get current bitrate', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode([])),
@@ -135,7 +137,7 @@ describe('Livestream API', function () {
             ->and($container[0]['request']->getUri()->getPath())->toBe('/library/123/live/stream-id/current-bitrate');
     });
 
-    it('can set thumbnail', function () {
+    it('can set thumbnail', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode([])),
@@ -149,7 +151,7 @@ describe('Livestream API', function () {
             ->and($container[0]['request']->getUri()->getQuery())->toBe('thumbnailUrl=http%3A%2F%2Fexample.com%2Fthumb.jpg');
     });
 
-    it('can get thumbnails', function () {
+    it('can get thumbnails', function (): void {
         $container = [];
         $client = mockGuzzleClient([
             new Response(200, [], json_encode([])),

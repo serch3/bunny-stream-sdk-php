@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 use Bunny\Stream\Tus\Uploader;
 use GuzzleHttp\Psr7\Response;
 
-describe('Tus Uploader', function () {
-    it('chunks file correctly', function () {
+describe('Tus Uploader', function (): void {
+    it('chunks file correctly', function (): void {
         // Create a dummy file larger than the chunk size (5MB default)
         // Let's set a small chunk size for testing
         $chunkSize = 1024; // 1KB
         $fileSize = 2500; // 2.5KB (3 chunks: 1024, 1024, 452)
-        
+
         $filePath = sys_get_temp_dir() . '/test_upload.bin';
         $content = str_repeat('a', $fileSize);
         file_put_contents($filePath, $content);
@@ -30,7 +32,7 @@ describe('Tus Uploader', function () {
 
         // Check HEAD request
         expect($container[0]['request']->getMethod())->toBe('HEAD');
-        
+
         // Check Chunk 1
         expect($container[1]['request']->getMethod())->toBe('PATCH')
             ->and($container[1]['request']->getHeaderLine('Upload-Offset'))->toBe('0')
@@ -50,10 +52,10 @@ describe('Tus Uploader', function () {
         unlink($filePath);
     });
 
-    it('resumes from offset', function () {
+    it('resumes from offset', function (): void {
         $chunkSize = 100;
         $fileSize = 300;
-        
+
         $filePath = sys_get_temp_dir() . '/test_resume.bin';
         $content = str_repeat('b', $fileSize);
         file_put_contents($filePath, $content);
@@ -73,11 +75,11 @@ describe('Tus Uploader', function () {
 
         // Check HEAD request
         expect($container[0]['request']->getMethod())->toBe('HEAD');
-        
+
         // Check Chunk 2 (First sent chunk)
         expect($container[1]['request']->getMethod())->toBe('PATCH')
             ->and($container[1]['request']->getHeaderLine('Upload-Offset'))->toBe('100') // Resumed from 100
-            ->and((string)$container[1]['request']->getBody())->toBe(substr($content, 100, 100));
+            ->and((string) $container[1]['request']->getBody())->toBe(substr($content, 100, 100));
 
         // Clean up
         unlink($filePath);
